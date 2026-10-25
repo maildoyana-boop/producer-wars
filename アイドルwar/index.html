@@ -246,11 +246,19 @@ body.pad button:focus,body.pad label:focus{outline:3px solid var(--vi);outline-o
 .cargo{position:absolute;right:1px;top:1px;font-size:8px;font-weight:700;background:var(--vi);color:var(--on-unit);border-radius:3px;padding:0 2px;z-index:2;line-height:1.3}
 .maplist{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:6px}
 .mapprev-wrap{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}
-.mapprev{display:grid;gap:1px;width:150px;background:var(--line);padding:1px;border-radius:4px;flex:none}
-.mapprev i{display:block;aspect-ratio:1;background:var(--t-plain)}
+.mapprev{display:grid;gap:1px;width:240px;max-width:100%;background:var(--line);padding:1px;border-radius:4px;flex:none}
+.mapprev i{display:block;aspect-ratio:1;background:var(--t-plain);position:relative}
 .mapprev i.t-fans{background:var(--t-fans)}.mapprev i.t-bldg{background:var(--t-bldg)}.mapprev i.t-park{background:var(--t-park)}.mapprev i.t-stage{background:var(--t-stage)}.mapprev i.t-street{background:var(--t-street)}.mapprev i.t-photo{background:var(--t-photo)}
 .mapprev i.prop{background:var(--t-bldg);opacity:.6}.mapprev i.o0{background:var(--p0);opacity:1}.mapprev i.o1{background:var(--p1);opacity:1}.mapprev i.o2{background:var(--p2);opacity:1}.mapprev i.o3{background:var(--p3);opacity:1}.mapprev i.o4{background:var(--p4);opacity:1}
 .mapprev i.hq{outline:1px solid var(--ink)}
+/* 全体マップの拠点の印：工場▲ 都市■ 空港✈ 軍港⚓ */
+.mapprev i[data-k]{color:var(--ink)}.mapprev i[data-k].o0,.mapprev i[data-k].o1,.mapprev i[data-k].o2,.mapprev i[data-k].o3,.mapprev i[data-k].o4{color:#fff}
+.mapprev i[data-k]::after{content:"";display:block!important;position:absolute;inset:24%;background:currentColor;pointer-events:none}
+.mapprev i[data-k="lesson"]::after{clip-path:polygon(50% 0,100% 100%,0 100%)}
+.mapprev i[data-k="live"]::after{inset:28%;border-radius:1px}
+.mapprev i[data-k="tv"]::after{-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1.5l1.3 7.2 7.7 4.4v2.1l-7.7-1.7v5.2l2.9 2.1v1.6L12 21.4l-4.2 1v-1.6l2.9-2.1v-5.2l-7.7 1.7v-2.1l7.7-4.4z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1.5l1.3 7.2 7.7 4.4v2.1l-7.7-1.7v5.2l2.9 2.1v1.6L12 21.4l-4.2 1v-1.6l2.9-2.1v-5.2l-7.7 1.7v-2.1l7.7-4.4z'/%3E%3C/svg%3E") center/contain no-repeat}
+.mapprev i[data-k="port"]::after{inset:18%;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 36'%3E%3Cg fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='5.5' r='3'/%3E%3Cpath d='M12 8.5V33M7.5 13h9M4 22c0 6.5 3.6 10 8 11.2c4.4-1.2 8-4.7 8-11.2M4 22l-2.4-3.6M20 22l2.4-3.6M10 33h4'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 36'%3E%3Cg fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='5.5' r='3'/%3E%3Cpath d='M12 8.5V33M7.5 13h9M4 22c0 6.5 3.6 10 8 11.2c4.4-1.2 8-4.7 8-11.2M4 22l-2.4-3.6M20 22l2.4-3.6M10 33h4'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat}
+
 .mapprev-wrap .tiny{flex:1;min-width:160px}
 .odot{position:absolute;left:2px;bottom:2px;width:6px;height:6px;border-radius:50%;background:var(--pc);box-shadow:0 0 0 1px var(--surface);z-index:1}
 .skillcard{text-align:left}.skillcard .big{font-size:22px}
@@ -1039,8 +1047,8 @@ function mapBlock(g){
     <div class="maplist">${mapCat==='自作'?`<button class="opt" data-a="map" data-v="custom" aria-pressed="${S.mapChoice==='custom'}" ${CUSTOM&&!g?'':'disabled'}><b>自作マップ</b>${CUSTOM?`${CUSTOM.w}×${CUSTOM.h}・${CUSTOM.np||2}人`:'まだありません'}</button><button class="opt" data-a="editor"><b>マップを作る</b>エディットを開く</button>`
       :MAPSET.filter(m=>m.cat===mapCat).map(m=>`<button class="opt" data-a="map" data-v="m:${m.id}" aria-pressed="${S.mapChoice==='m:'+m.id}" ${g}><b>${m.name}</b>${m.w}×${m.h}</button>`).join('')}</div>
     <div class="npsel"><span class="muted">索敵</span><button class="zb" data-a="fog" data-v="0" aria-pressed="${!fogSel}" ${g}>なし</button><button class="zb" data-a="fog" data-v="1" aria-pressed="${fogSel}" ${g}>あり</button><span class="tiny">ありにすると、自分のユニットの周りしか見えません(歩兵2・偵察車5・軽戦車3・ほか1マス、森の中は隣のマスからだけ)</span></div>
-    <div class="mapprev-wrap"><div class="mapprev" style="grid-template-columns:repeat(${sel.w},1fr)">${sel.rows.join('').split('').map(c=>{const [t,o]=CH[c]||CH['.'];return `<i class="${TERR[t].prop?`prop o${o}${t==='hq'?' hq':''}`:'t-'+t}"></i>`;}).join('')}</div>
-    <div class="tiny">${sel.name?`<b>${sel.name}</b>(${sel.cat||''})`:'自作マップ'}・${sel.w}×${sel.h}。${S.mapChoice==='custom'?'':'どの人数でも遊べます。使わない色の拠点は中立になります。'}${sel.hill?'★の拠点が中央制圧の対象です。':''}${S.mapChoice==='custom'?'':`<div class="mapcnt">${mapCountHTML(sel)}</div>`}最初はユニットがいないので、1日目の資金で歩兵を配備して始めます。</div></div></div>`;
+    <div class="mapprev-wrap"><div class="mapprev" style="grid-template-columns:repeat(${sel.w},1fr)">${sel.rows.join('').split('').map(c=>{const [t,o]=CH[c]||CH['.'];return `<i class="${TERR[t].prop?`prop o${o}${t==='hq'?' hq':''}`:'t-'+t}"${TERR[t].prop&&t!=='hq'?` data-k="${t}"`:''}></i>`;}).join('')}</div>
+    <div class="tiny">${sel.name?`<b>${sel.name}</b>(${sel.cat||''})`:'自作マップ'}・${sel.w}×${sel.h}。${S.mapChoice==='custom'?'':'どの人数でも遊べます。使わない色の拠点は中立になります。'}${sel.hill?'★の拠点が中央制圧の対象です。':''}<br><span class="muted">▲工場　■都市　✈空港　⚓軍港（白い印は陣営の拠点、黒い印は中立）</span><br>${S.mapChoice==='custom'?'':`<div class="mapcnt">${mapCountHTML(sel)}</div>`}最初はユニットがいないので、1日目の資金で歩兵を配備して始めます。</div></div></div>`;
   return mapPick;
 }
 function ruleBlock(g){
