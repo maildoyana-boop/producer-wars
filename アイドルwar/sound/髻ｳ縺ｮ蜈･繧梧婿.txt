@@ -1,0 +1,23 @@
+【BGM】 sound/bgm フォルダ
+  title.mp3   … タイトル画面で流れる曲(固定)
+  victory.mp3 … 勝敗が決まったときの曲(固定)
+  それ以外の曲 … 好きな名前でOK。list.txt に「ファイル名,曲名」を書くと、
+                 プレイヤーごとに「ターンBGM」「PスキルBGM」として選べます。
+
+【効果音】 sound/se フォルダ(ファイル名は固定)
+  cursor.mp3  カーソル移動
+  ok.mp3      決定
+  cancel.mp3  キャンセル・戻る
+  move.mp3    移動
+  live.mp3    LIVE
+  cm.mp3      CMを流す
+  retire.mp3  引退
+  bira.mp3    ビラ配り
+  capture.mp3 拠点獲得
+  scout.mp3   スカウト
+  pskill.mp3  Pスキル発動
+  turn.mp3    ターン開始
+  trap.mp3    待ち伏せ
+
+ない音は鳴らないだけなので、用意できたものから入れてください。
+形式はMP3がおすすめです。

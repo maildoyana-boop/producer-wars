@@ -1,0 +1,12 @@
+# ここに「ファイル名,曲名」を1行ずつ書くと、ゲームのBGM選択に出てきます。
+# 先頭が # の行は無視されます。曲ファイルはこの bgm フォルダに入れてください。
+p_nekketsu_turn.mp3,熱血P テーマ
+p_nekketsu_skill.mp3,熱血P Pスキル
+p_binwan_turn.mp3,敏腕P テーマ
+p_binwan_skill.mp3,敏腕P Pスキル
+p_sewayaki_turn.mp3,世話焼きP テーマ
+p_sewayaki_skill.mp3,世話焼きP Pスキル
+p_gouka_turn.mp3,豪華主義P テーマ
+p_gouka_skill.mp3,豪華主義P Pスキル
+p_yarikuri_turn.mp3,やりくりP テーマ
+p_yarikuri_skill.mp3,やりくりP Pスキル
