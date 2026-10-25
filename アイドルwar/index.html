@@ -321,7 +321,7 @@ const TERR={
   tv:{name:'空港',g:'空',cost:1,def:.2,prop:1,buildAir:1},
   sea:{name:'海',g:'',cost:99,def:0,sea:1},
   shallow:{name:'浅瀬',g:'浅',cost:1,def:0,shore:1},
-  port:{name:'通信塔',g:'塔',cost:1,def:.2,prop:1,buildSea:1}
+  port:{name:'軍港',g:'錨',cost:1,def:.2,prop:1,buildSea:1}
 };
 const UNITS={
   trainee:{name:'歩兵',short:'歩',cost:1000,move:3,power:55,generic:1,capturer:1},
@@ -343,7 +343,7 @@ const UNITS={
   transport:{name:'揚陸艦',short:'揚',cost:12000,move:5,power:0,generic:1,naval:1,carrier:1},
   makezu:{name:'負けず嫌い系アイドル',short:'負',attr:'Vi',cost:28000,move:4,power:105,trait:'一番乗り',desc:'自分から仕掛ける攻撃力+15%'},
   chiwawa:{name:'チワワ系アイドル',short:'チ',attr:'Vo',cost:28000,move:4,power:105,trait:'キャンキャン',desc:'反撃の攻撃力+30%'},
-  money:{name:'お金大好き系アイドル',short:'金',attr:'Da',cost:28000,move:4,power:105,trait:'がめつい',desc:'相手を引退させると資金+1,500'},
+  money:{name:'お金大好き系アイドル',short:'金',attr:'Da',cost:28000,move:4,power:105,trait:'がめつい',desc:'相手を撃破させると資金+1,500'},
   tensai:{name:'No.2アイドル',short:'弐',attr:'Da',cost:28000,move:4,power:105,trait:'天才',desc:'相性が不利でも攻撃力が下がらない'},
   prince:{name:'王子様系アイドル',short:'王',attr:'Vo',cost:28000,move:4,power:105,trait:'エスコート',desc:'隣にいる味方の攻撃力+10%'},
   ryugaku:{name:'結界系アイドル',short:'結',attr:'Vi',cost:28000,move:4,power:105,trait:'伸びしろ',desc:'自分から仕掛けるたび攻撃力+5%(最大+25%)'},
@@ -412,7 +412,7 @@ function seenBy(v,side){
 const BEATS={Da:'Vo',Vo:'Vi',Vi:'Da'};
 const SIDE=['プレイヤー1','プレイヤー2','プレイヤー3','プレイヤー4','プレイヤー5'];
 const DEFPICK=['nekketsu','sewayaki','binwan','nekketsu','gouka'];
-const gl=(d,t)=>d.g==='塔'?'<span class="g tower"><svg viewBox="0 0 24 36" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 1v6M10 7h4"/><path d="M9.2 7L7 34M14.8 7L17 34M4.5 34h15"/><path d="M8.6 13h6.8M8 21h8M7.6 27h8.8"/><path d="M9.2 7l5.6 6.5M14.8 7l-5.6 6.5M8 13l8 8M16 13l-8 8M7.6 21l9.6 6.5M16.6 21l-9.6 6.5"/></g></svg></span>':d.g==='空'?'<span class="g tv"></span>':d.g==='工'?'<span class="g tri"></span>':d.g==='☆'?'<span class="g star">☆</span>':d.g==='都'?'<span class="g sq"></span>':`<span class="g">${t?d.g:''}</span>`;
+const gl=(d,t)=>d.g==='錨'?'<span class="g tower"><svg viewBox="0 0 24 36" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5.5" r="3"/><path d="M12 8.5V33"/><path d="M7.5 13h9"/><path d="M4 22c0 6.5 3.6 10 8 11.2c4.4-1.2 8-4.7 8-11.2"/><path d="M4 22l-2.4-3.6M20 22l2.4-3.6"/><path d="M10 33h4"/></g></svg></span>':d.g==='空'?'<span class="g tv"></span>':d.g==='工'?'<span class="g tri"></span>':d.g==='☆'?'<span class="g star">☆</span>':d.g==='都'?'<span class="g sq"></span>':`<span class="g">${t?d.g:''}</span>`;
 const fmt=n=>n.toLocaleString('ja-JP');
 
 /* ---------- storage ---------- */
@@ -583,8 +583,8 @@ function battle(a,d){
   const dd=killCheck(d),ad=killCheck(a);
   if(dd&&a.kind==='money'&&!ad){S.players[a.side].money+=1500;say('がめつい!資金+1,500');}
   if(ad&&d.kind==='money'&&!dd){S.players[d.side].money+=1500;say('がめつい!資金+1,500');}
-  if(dd)say(`${UNITS[d.kind].name}のHPが0人に…引退`);if(ad)say(`${UNITS[a.kind].name}のHPが0人に…引退`);
-  for(let s=0;s<S.np;s++)if(!S.players[s].out&&!S.units.some(u=>u.side===s))eliminate(s,'ユニットが全員引退');
+  if(dd)say(`${UNITS[d.kind].name}のHPが0人に…撃破`);if(ad)say(`${UNITS[a.kind].name}のHPが0人に…撃破`);
+  for(let s=0;s<S.np;s++)if(!S.players[s].out&&!S.units.some(u=>u.side===s))eliminate(s,'ユニットが全員撃破');
 }
 function capture(u){
   const t=T(u.x,u.y);if(t.capUnit!==u.id){t.cap=20;t.capUnit=u.id;}
@@ -607,7 +607,7 @@ function eliminate(s,why){
   say(`${SIDE[s]}が脱落…(${why})`);
   const alive=S.players.map((q,i)=>i).filter(i=>!S.players[i].out);
   if(isTeam()){const ts=[...new Set(alive.map(teamOf))];if(ts.length===1){S.winTeam=ts[0];win(alive[0],'相手チームが全員脱落');}else if(s===S.cur){endTurn();afterEnd();}return;}
-  if(alive.length===1)win(alive[0],S.np>2?'最後まで残った':why==='本部を獲得された'?'本部を獲得':'相手のユニットが全員引退');
+  if(alive.length===1)win(alive[0],S.np>2?'最後まで残った':why==='本部を獲得された'?'本部を獲得':'相手のユニットが全員撃破');
   else if(s===S.cur){endTurn();afterEnd();}
 }
 const isTeam=()=>S.mode==='team';
@@ -616,7 +616,7 @@ const TEAMNAME=new Proxy([],{get:(o,k)=>{const t=+k;if(isNaN(t))return undefined
 function enemy(a,b){return isTeam()?teamOf(a)!==teamOf(b):a!==b;}
 function uniqCount(side){return S.buys?S.buys[side]||0:Object.values(S.taken||{}).filter(v=>v===side).length;}
 function costOf(kind,side){const d=UNITS[kind];if(!d.generic&&S.lastPrice&&S.lastPrice[kind])return S.lastPrice[kind];const pm=(S.players&&S.players[side]&&PRODS[S.players[side].prod].costMul)||1;return Math.round(d.cost*pm*(d.generic?1:1.5**uniqCount(side))/100)*100;}
-function uniqState(k){if(S.retired&&S.retired[k])return {ok:false,label:'引退済み'};if(S.taken[k]!==undefined)return {ok:false,label:`${SIDE[S.taken[k]]}所属`};const c=S.cool&&S.cool[k];if(c!==undefined&&S.day<=c+1)return {ok:false,label:`${c+2}日目から`};return {ok:true};}
+function uniqState(k){if(S.retired&&S.retired[k])return {ok:false,label:'撃破済み'};if(S.taken[k]!==undefined)return {ok:false,label:`${SIDE[S.taken[k]]}所属`};const c=S.cool&&S.cool[k];if(c!==undefined&&S.day<=c+1)return {ok:false,label:`${c+2}日目から`};return {ok:true};}
 /* 索敵の待ち伏せ:経路上に隠れた相手がいたら手前で止まる。止まった位置と、ぶつかったかどうかを返す */
 function walkTo(u,reach,x,y){
   const path=[];let k=x+','+y;while(k&&k!==reach.from){path.unshift(k);k=reach.prev?reach.prev[k]:null;}
@@ -655,8 +655,8 @@ function useSkill(){
 }
 
 /* ---------- map editor ---------- */
-const PAL=[['.','道'],['#','ビル'],['p','森'],['w','川'],['l','工場'],['c','都市'],['t','空港'],['~','海'],['h','浅瀬'],['o','通信塔']];
-for(let i=0;i<4;i++)PAL.push([OWN.hq[i],`本部P${i+1}`],[OWN.lesson[i],`工場P${i+1}`],[OWN.live[i],`都市P${i+1}`],[OWN.tv[i],`空港P${i+1}`],[OWN.port[i],`通信塔P${i+1}`],['s'+i,`初期P${i+1}`]);
+const PAL=[['.','道'],['#','ビル'],['p','森'],['w','川'],['l','工場'],['c','都市'],['t','空港'],['~','海'],['h','浅瀬'],['o','軍港']];
+for(let i=0;i<4;i++)PAL.push([OWN.hq[i],`本部P${i+1}`],[OWN.lesson[i],`工場P${i+1}`],[OWN.live[i],`都市P${i+1}`],[OWN.tv[i],`空港P${i+1}`],[OWN.port[i],`軍港P${i+1}`],['s'+i,`初期P${i+1}`]);
 function fullPick(a){return [0,1,2,3,4].map(i=>a[i]||DEFPICK[i]);}
 function openEditor(){
   const m=CUSTOM||stdMap();
@@ -836,7 +836,7 @@ function unitHtml(kind,side,attr,fans,done,hid,face){
   return `<span class="u s${side}${k.generic?` k-${kind}`:' uniq'}${k.air?' air':''}${done?' done':''}${hid?' hid':''}${activeSkill(side)?' boosted':''}${up?` hasimg iu-${kind}`:(dp?' hasimg':'')}"${dp?` style="background-image:url('${dp}')"`:''}>${attr?`<span class="a ${attr}"></span>`:''}<span class="ch">${k.short}</span>${n<10?`<span class="hp">${n}</span>`:''}</span>`;
 }
 function dmgLine(k){if(UNITS[k].carrier)return '攻撃できません(歩兵を1人運べます)';const L={trainee:'歩',recon:'偵',apc:'補',art:'自',rookie:'軽',mid:'中',vet:'重',uniq:'固',aa:'空',missile:'ミ',heli:'攻',theli:'輸',fighter:'戦',bomber:'爆'};return Object.keys(L).map(c=>[c,Math.round(GEN[UCLS(k)][c]*(UCLS(k)==='uniq'?uniqScale(k):1))]).filter(([c,v])=>v>0).map(([c,v])=>`${L[c]}${v}`).join(' ');}
-function shopKinds(t){const d=TERR[t.type],ab=airBase(t);if(d.buildSea)return Object.keys(UNITS).filter(k=>UNITS[k].naval);return Object.keys(UNITS).filter(k=>ab?isAir(k):(d.build&&!isAir(k)));}
+function shopKinds(t){const d=TERR[t.type],ab=airBase(t);if(d.buildSea)return Object.keys(UNITS).filter(k=>UNITS[k].naval);return Object.keys(UNITS).filter(k=>ab?isAir(k):(d.build&&!isAir(k)&&!UNITS[k].naval));}
 function prodInfo(side){const p=S.players&&S.players[side];if(!p)return '';const P=PRODS[p.prod],a=activeSkill(side);
   return `<div class="prodbox${a?' on':''}"><div><b>${P.name}</b> <span class="muted">いつも:${P.passive}</span></div>${a?`<div class="act">特殊作戦発動中「${a.name}」:${a.desc}</div>`:`<div class="tiny">特殊作戦「${P.skill}」はまだ発動していません(ゲージ${Math.floor(p.gauge)}/${P.cost})</div>`}</div>`;}
 function unitInfo(u){
@@ -866,7 +866,7 @@ function panelBody(){
     return `<h3>攻撃予想</h3><div class="vs">
       <div><div class="muted">${UNITS[me.kind].name}</div><div class="n">${fmt(me.fans)}→${fmt(r.aEnd)}</div><div class="dmg">相手 -${fmt(r.d1)}人</div></div>
       <div class="muted">VS</div>
-      <div><div class="muted">${UNITS[tg.kind].name}</div><div class="n">${fmt(tg.fans)}→${fmt(r.dEnd)}</div><div class="dmg">${r.dEnd>0?`反撃 ${fmt(r.d2)}人`:'引退'}</div></div></div>
+      <div><div class="muted">${UNITS[tg.kind].name}</div><div class="n">${fmt(tg.fans)}→${fmt(r.dEnd)}</div><div class="dmg">${r.dEnd>0?`反撃 ${fmt(r.d2)}人`:'撃破'}</div></div></div>
       ${UNITS[tg.kind].generic?'':''}`;
   }
   if(ui.mode==='build')return `<h3>配備中</h3><div class="muted">右に出ている一覧から選んでください。資金 ${fmt(p.money)}</div><div class="row"><button class="btn" data-a="cancel">閉じる</button></div>`;
@@ -891,7 +891,7 @@ function fmenu(){
   }
   if(ui.mode==='confirm'){
     const tg=S.units.find(v=>v.id===ui.tid),r=sim(me,tg);
-    return `<div class="fmenu" data-x="${tg.x}" data-y="${tg.y}" role="menu"><div class="fm-info">相手 -${fmt(r.d1)}人<br>${r.dEnd<=0?'相手は引退':canCounter(tg,me)?`反撃 ${fmt(r.d2)}人`:'反撃なし'}</div>
+    return `<div class="fmenu" data-x="${tg.x}" data-y="${tg.y}" role="menu"><div class="fm-info">相手 -${fmt(r.d1)}人<br>${r.dEnd<=0?'相手は撃破':canCounter(tg,me)?`反撃 ${fmt(r.d2)}人`:'反撃なし'}</div>
       <button class="go" data-a="fire">${verbOf(me.kind,true)}</button><button data-a="tback">戻る</button></div>`;
   }
   return '';
@@ -1041,7 +1041,7 @@ function ruleBlock(g){
   const sel=S.mapChoice==='custom'&&CUSTOM?CUSTOM:presetOf(S.mapChoice);
   const rulePick=`<div class="pick span2"><b>勝利条件</b>
     <div class="npsel"><span class="muted">日数制限</span>${[0,20,25,30,40].map(n=>`<button class="zb" data-a="dl" data-v="${n}" aria-pressed="${(ruleSel.dl||0)===n}" ${g}>${n?n+'日':'なし'}</button>`).join('')}</div>
-    <div class="tiny">${ruleSel.dl?`${ruleSel.dl}日目が終わった時点で、拠点数が多いほうの勝ち(同じならHP合計。チーム戦はチーム合計)。`:'日数制限なし。本部を獲得されるか、全員引退すると決着します。'}</div>
+    <div class="tiny">${ruleSel.dl?`${ruleSel.dl}日目が終わった時点で、拠点数が多いほうの勝ち(同じならHP合計。チーム戦はチーム合計)。`:'日数制限なし。本部を獲得されるか、全員撃破すると決着します。'}</div>
     <div class="npsel"><span class="muted">中央制圧</span>${[0,3,5,7].map(n=>`<button class="zb" data-a="hill" data-v="${n}" aria-pressed="${(ruleSel.hill||0)===n}" ${g}>${n?n+'日':'なし'}</button>`).join('')}</div>
     <div class="tiny">${sel.hill?(ruleSel.hill?`マップ中央の★の拠点を${ruleSel.hill}日間持ち続けたチームの勝ちです(獲得した日から数え、奪われたらやり直し)。`:'中央制圧はオフです。通常のルールで遊びます。'):'中央制圧は「中央制圧向け」のマップで使えます。'}</div></div>`;
   return rulePick;
@@ -1093,11 +1093,11 @@ function screenSettings(){return `<div class="setup scr">${navBar('title','設�
     <li>偵察車は足が速く歩兵に強い。自走砲は2〜3マス先を攻撃でき(移動したターンは不可・反撃なし)、補給車は歩兵を1人運べます。値段は本家ファミコンウォーズDSと同じです。</li>
     <li>「1人プレイで始める」でCPUと対戦できます。訓練・ふつう・本気の3段階です。</li>
     <li>後攻ほど最初の資金が多くなります(プレイヤー2は+2,000、3は+4,000、4は+6,000、5は+8,000)。</li>
-    <li>ユニットのHPがHPです。0人になると引退します。</li>
+    <li>ユニットのHPがHPです。0人になると撃破します。</li>
     <li>攻撃(交戦)で相手のHPを減らします。生き残った相手は反撃攻撃します。</li>
         <li>相性は機動→火力→装甲→機動の三すくみ(機動は火力に、火力は装甲に、装甲は機動に強い)(有利+25%/不利-20%)。</li>
     <li>拠点(本・工・都)は<b>歩兵だけ</b>が「占領」で獲得できます。毎ターン資金と回復が得られます。</li>
-    <li>本部を獲得されるか、ユニットが全員引退すると脱落。最後まで残った人の勝ち。</li>
+    <li>本部を獲得されるか、ユニットが全員撃破すると脱落。最後まで残った人の勝ち。</li>
     <li>4人のときはチーム戦(P1・P3対P2・P4)も選べます。</li>
     <li>歩兵・軽戦車・中戦車・重戦車は無属性(相性も地形ボーナスもなし)。強さはファミコンウォーズDSと同じバランスで、歩兵・軽戦車・中戦車・重戦車・新型戦車・グレートタンクの強さに合わせています。</li>
     <li>固有アイドルは、ステータスがグレートタンクと同じです。</li>
@@ -1106,7 +1106,7 @@ function screenSettings(){return `<div class="setup scr">${navBar('title','設�
     <li>空のユニット(攻撃ヘリ・戦闘機・爆撃機・輸送ヘリ)は、自分の空港で配備します(空港のない前からあるマップでは、都市(□)で配備します)。ビルや川の上も飛べますが、地形の守りはありません。燃料・弾薬はありません。</li>
     <li>対空戦車は空にとても強く、歩兵も攻撃できます。ミサイル車(対空ミサイル)は3〜5マス先の空のユニットだけを狙えます(移動したターンは不可・反撃なし)。戦闘機は空のユニットにしか攻撃できません。</li>
     <li>川は、ファミコンウォーズの川と同じ扱いです。歩兵だけが通れて(移動コスト2)、ほかのユニットは通れません。</li>
-    <li>固有アイドルは同時に1人だけ。先に配備した人の所属になります。引退するとその試合ではもう配備できません。2人目からは値段が1.5倍、2.25倍…と上がっていきます。</li>
+    <li>固有アイドルは同時に1人だけ。先に配備した人の所属になります。撃破するとその試合ではもう配備できません。2人目からは値段が1.5倍、2.25倍…と上がっていきます。</li>
   </ul></details>
 </div>`;}
 function setup(){
@@ -1295,7 +1295,7 @@ function threatMap(side){
 }
 function aiChoose(u,lv,threat,plan){
   /* 評価は「お金に換算した損得」で計算する。相手に与える損失(アイドルの値段×減らした割合)から、
-     自分の損失(反撃で減る分・引退・その場にいる危険)を引く。 */
+     自分の損失(反撃で減る分・撃破・その場にいる危険)を引く。 */
   plan=plan||new Map();
   const reach=reachOf(u),ox=u.x,oy=u.y,D=goalField(u),opts=[];
   const occ=new Set(S.units.filter(v=>v!==u&&!v.in).map(v=>v.x+','+v.y));
