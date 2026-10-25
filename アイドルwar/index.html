@@ -116,7 +116,8 @@ h2{font-family:var(--display);font-weight:400;font-size:20px;margin:0}
 .u.air::after{content:"";position:absolute;left:22%;right:22%;bottom:-22%;height:10%;border-radius:50%;background:rgba(0,0,0,.25)}
 .u.k-theli{border-radius:30%}
 .u.boosted.k-recon:not(.hasimg),.u.boosted.k-art:not(.hasimg){filter:drop-shadow(0 0 3px var(--vi))}
-.u.hasimg{border:2.5px solid var(--sc);background-size:cover;background-position:center}
+.u.hasimg{inset:0;border-radius:0;box-shadow:none;background-color:transparent;border:2px solid var(--sc);background-size:108% 108%;background-position:center;background-repeat:no-repeat}
+.u.hasimg .a{display:none}
 .u.hasimg .ch{display:none}
 .u.done{opacity:.45}
 .u.capping{animation:capblink .9s steps(2,jump-none) infinite}@keyframes capblink{0%{opacity:1}100%{opacity:.25}}
