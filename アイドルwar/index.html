@@ -448,6 +448,7 @@ const MAPSET=[{"id":"2p-1","cat":"2陣営向け","name":"初陣の丘","w":20,"h
 const MAPCATS=['2陣営向け','3陣営向け','4陣営向け','5陣営向け','中央制圧向け'];
 let ruleSel=load('pw-rule',{dl:0,hill:0});if(!ruleSel||typeof ruleSel!=='object')ruleSel={dl:0,hill:0};
 function mapCounts(m){const np=OWN.hq.filter(ch=>m.rows.some(r=>r.includes(ch))).length;const c={np,nl:{},own:{}};for(const k of ['lesson','tv','port']){c.own[k]=Array(np).fill(0);c.nl[k]=0;}for(const row of m.rows)for(const ch of row)for(const k of ['lesson','tv','port']){const i=OWN[k].indexOf(ch);if(i>=0&&i<np)c.own[k][i]++;if(NEUT[k]===ch)c.nl[k]++;}return c;}
+function mapCountHTML(m){const c=mapCounts(m);const nm={lesson:'工場',tv:'空港',port:'軍港'};return ['lesson','tv','port'].map(k=>`${nm[k]}　${c.own[k].map((v,i)=>`P${i+1}:${v}`).join(' ')}　中立:${c.nl[k]}`).join('<br>');}
 function mapCountText(m){const c=mapCounts(m);const nm={lesson:'工場',tv:'空港',port:'軍港'};return ['lesson','tv','port'].map(k=>`${nm[k]} ${c.own[k].map((v,i)=>`P${i+1}:${v}`).join(' ')} 中立:${c.nl[k]}`).join(' ／ ');}
 function presetOf(choice){return MAPSET.find(m=>'m:'+m.id===choice)||MAPSET[0];}
 function presetMap(m,np){const rows=m.rows.map(r=>[...r].map(c=>{const v=CH[c];return v&&v[1]>=np?(NEUT[v[0]]||'c'):c;}).join(''));return {w:m.w,h:m.h,rows,starts:[null,null,null,null],np,bare:true,hill:m.hill||null,bonus:m.bonus||null,inc:m.inc||null};}
@@ -1036,10 +1037,10 @@ function mapBlock(g){
   const mapPick=`<div class="pick mappick"><b>マップ</b>
     <div class="npsel">${MAPCATS.map(c=>`<button class="zb" data-a="mapcat" data-v="${c}" aria-pressed="${mapCat===c}">${c}</button>`).join('')}<button class="zb" data-a="mapcat" data-v="自作" aria-pressed="${mapCat==='自作'}">自作</button></div>
     <div class="maplist">${mapCat==='自作'?`<button class="opt" data-a="map" data-v="custom" aria-pressed="${S.mapChoice==='custom'}" ${CUSTOM&&!g?'':'disabled'}><b>自作マップ</b>${CUSTOM?`${CUSTOM.w}×${CUSTOM.h}・${CUSTOM.np||2}人`:'まだありません'}</button><button class="opt" data-a="editor"><b>マップを作る</b>エディットを開く</button>`
-      :MAPSET.filter(m=>m.cat===mapCat).map(m=>`<button class="opt" data-a="map" data-v="m:${m.id}" aria-pressed="${S.mapChoice==='m:'+m.id}" ${g}><b>${m.name}</b>${m.w}×${m.h}<span class="mapcnt">${mapCountText(m)}</span></button>`).join('')}</div>
+      :MAPSET.filter(m=>m.cat===mapCat).map(m=>`<button class="opt" data-a="map" data-v="m:${m.id}" aria-pressed="${S.mapChoice==='m:'+m.id}" ${g}><b>${m.name}</b>${m.w}×${m.h}</button>`).join('')}</div>
     <div class="npsel"><span class="muted">索敵</span><button class="zb" data-a="fog" data-v="0" aria-pressed="${!fogSel}" ${g}>なし</button><button class="zb" data-a="fog" data-v="1" aria-pressed="${fogSel}" ${g}>あり</button><span class="tiny">ありにすると、自分のユニットの周りしか見えません(歩兵2・偵察車5・軽戦車3・ほか1マス、森の中は隣のマスからだけ)</span></div>
     <div class="mapprev-wrap"><div class="mapprev" style="grid-template-columns:repeat(${sel.w},1fr)">${sel.rows.join('').split('').map(c=>{const [t,o]=CH[c]||CH['.'];return `<i class="${TERR[t].prop?`prop o${o}${t==='hq'?' hq':''}`:'t-'+t}"></i>`;}).join('')}</div>
-    <div class="tiny">${sel.name?`<b>${sel.name}</b>(${sel.cat||''})`:'自作マップ'}・${sel.w}×${sel.h}。${S.mapChoice==='custom'?'':'どの人数でも遊べます。使わない色の拠点は中立になります。'}${sel.hill?'★の拠点が中央制圧の対象です。':''}最初はユニットがいないので、1日目の資金で歩兵を配備して始めます。</div></div></div>`;
+    <div class="tiny">${sel.name?`<b>${sel.name}</b>(${sel.cat||''})`:'自作マップ'}・${sel.w}×${sel.h}。${S.mapChoice==='custom'?'':'どの人数でも遊べます。使わない色の拠点は中立になります。'}${sel.hill?'★の拠点が中央制圧の対象です。':''}${S.mapChoice==='custom'?'':`<div class="mapcnt">${mapCountHTML(sel)}</div>`}最初はユニットがいないので、1日目の資金で歩兵を配備して始めます。</div></div></div>`;
   return mapPick;
 }
 function ruleBlock(g){
