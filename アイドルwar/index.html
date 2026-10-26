@@ -960,7 +960,7 @@ function board(){
     const t=T(x,y),d=TERR[t.type];let u=unitAt(x,y);if(u&&u.hidden&&!seenBy(u,viewer()))u=null;
     if(u&&V&&!V.has(y*W+x)&&!(u.side===vw||(isTeam()&&vw>=0&&!enemy(u.side,vw))))u=null;
     let cls=tileClass(t.type,t.owner)+(V&&!V.has(y*W+x)?' fog':'');
-    const airSt=(t.type==='tv'||t.type==='port')?` style="background-image:url('img/${t.type==='tv'?'airport':'port'}/${t.owner>=0?FACTION_DIR[t.owner]:'neutral'}.png')"`:'';if(t.type==='tv'||t.type==='port')cls+=' hasimg';
+    const airSt='';
     if(reach&&reach.has(x+','+y))cls+=ui.mode==='unload'?' reach drop':' reach';
     if(ui.mode==='move'&&u&&ui.uid&&canMerge(S.units.find(v=>v.id===ui.uid),u))cls+=' merge';
     if(threat&&threat.has(x+','+y))cls+=' threat';
