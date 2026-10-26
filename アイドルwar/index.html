@@ -960,6 +960,7 @@ function board(){
     const t=T(x,y),d=TERR[t.type];let u=unitAt(x,y);if(u&&u.hidden&&!seenBy(u,viewer()))u=null;
     if(u&&V&&!V.has(y*W+x)&&!(u.side===vw||(isTeam()&&vw>=0&&!enemy(u.side,vw))))u=null;
     let cls=tileClass(t.type,t.owner)+(V&&!V.has(y*W+x)?' fog':'');
+    const airSt=t.type==='tv'?` style="background-image:url('img/airport/${t.owner>=0?FACTION_DIR[t.owner]:'neutral'}.png')"`:'';if(t.type==='tv')cls+=' hasimg';
     if(reach&&reach.has(x+','+y))cls+=ui.mode==='unload'?' reach drop':' reach';
     if(ui.mode==='move'&&u&&ui.uid&&canMerge(S.units.find(v=>v.id===ui.uid),u))cls+=' merge';
     if(threat&&threat.has(x+','+y))cls+=' threat';
@@ -972,7 +973,7 @@ function board(){
     let inner=`${gl(d)}`+(d.prop&&t.owner>=0?'<span class="odot"></span>':'')+(isHill?'<span class="hillmark">★</span>':'');
     if(t.capUnit&&t.cap<20)inner+=`<span class="cap">${t.cap}</span>`;
     if(u)inner+=(t.capUnit===u.id&&t.cap<20?unitHtml(u.kind,u.side,attrOf(u),u.fans,u.acted&&u.side===S.cur,!!u.hidden,u.face).replace('class="u ','class="u capping '):unitHtml(u.kind,u.side,attrOf(u),u.fans,u.acted&&u.side===S.cur,!!u.hidden,u.face))+(cargoList(u).length?'<span class="cargo">'+UNITS[cargoList(u)[0].kind].short+'</span>':'');
-    h+=`<button class="${cls}" data-x="${x}" data-y="${y}" aria-label="${x+1},${y+1} ${d.name}${u?' '+UNITS[u.kind].name:''}">${inner}</button>`;
+    h+=`<button class="${cls}"${airSt} data-x="${x}" data-y="${y}" aria-label="${x+1},${y+1} ${d.name}${u?' '+UNITS[u.kind].name:''}">${inner}</button>`;
   }
   return h+fmenu()+'</div>';
 }
