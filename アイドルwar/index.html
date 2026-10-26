@@ -970,7 +970,7 @@ function board(){
     if(blocked()&&peekView&&peekView.x===x&&peekView.y===y)cls+=' sel';
     if(padOn&&cur.x===x&&cur.y===y)cls+=' cur';
     const isHill=S.hill&&S.hill.x===x&&S.hill.y===y;if(isHill)cls+=' hill';
-    let inner=`${gl(d)}`+(d.prop&&t.owner>=0?'<span class="odot"></span>':'')+(isHill?'<span class="hillmark">★</span>':'');
+    let inner=`${gl(d)}`+''+(isHill?'<span class="hillmark">★</span>':'');
     if(t.capUnit&&t.cap<20)inner+=`<span class="cap">${t.cap}</span>`;
     if(u)inner+=(t.capUnit===u.id&&t.cap<20?unitHtml(u.kind,u.side,attrOf(u),u.fans,u.acted&&u.side===S.cur,!!u.hidden,u.face).replace('class="u ','class="u capping '):unitHtml(u.kind,u.side,attrOf(u),u.fans,u.acted&&u.side===S.cur,!!u.hidden,u.face))+(cargoList(u).length?'<span class="cargo">'+UNITS[cargoList(u)[0].kind].short+'</span>':'');
     h+=`<button class="${cls}"${airSt} data-x="${x}" data-y="${y}" aria-label="${x+1},${y+1} ${d.name}${u?' '+UNITS[u.kind].name:''}">${inner}</button>`;
